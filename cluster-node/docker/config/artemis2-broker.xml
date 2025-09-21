@@ -1,0 +1,63 @@
+<configuration xmlns="urn:activemq"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="urn:activemq/schema/artemis-configuration.xsd">
+
+  <core>
+    <name>artemis2</name>
+
+
+    <!-- persistence enabled -->
+    <persistence-enabled>true</persistence-enabled>
+
+    <!-- journal configuration -->
+    <journal-directory>data/journal</journal-directory>
+    <paging-directory>data/paging</paging-directory>
+    <bindings-directory>data/bindings</bindings-directory>
+    <large-messages-directory>data/large-messages</large-messages-directory>
+    
+    <connectors>
+      <connector name="artemis1">tcp://artemis1:61616</connector>
+      <connector name="artemis2">tcp://artemis2:61616</connector>
+      <connector name="artemis3">tcp://artemis3:61616</connector>
+    </connectors>
+
+    <acceptors>
+      <acceptor name="core">tcp://0.0.0.0:61616</acceptor>
+    </acceptors>
+
+    <cluster-connections>
+      <cluster-connection name="my-cluster">
+        <address>jms</address>
+        <connector-ref>artemis2</connector-ref>
+        <static-connectors>
+          <connector-ref>artemis1</connector-ref>
+          <connector-ref>artemis2</connector-ref>
+          <connector-ref>artemis3</connector-ref>
+        </static-connectors>
+      </cluster-connection>
+    </cluster-connections>
+
+    <security-settings>
+      <security-setting match="#">
+        <permission type="createNonDurableQueue" roles="amq"/>
+        <permission type="deleteNonDurableQueue" roles="amq"/>
+        <permission type="createDurableQueue" roles="amq"/>
+        <permission type="deleteDurableQueue" roles="amq"/>
+        <permission type="createAddress" roles="amq"/>
+        <permission type="deleteAddress" roles="amq"/>
+        <permission type="consume" roles="amq"/>
+        <permission type="browse" roles="amq"/>
+        <permission type="send" roles="amq"/>
+        <permission type="manage" roles="amq"/>
+      </security-setting>
+    </security-settings>
+
+    <addresses>
+      <address name="jms">
+        <anycast>
+          <queue name="jms.queue.test"/>
+        </anycast>
+      </address>
+    </addresses>
+  </core>
+</configuration>

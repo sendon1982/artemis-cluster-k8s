@@ -1,0 +1,51 @@
+version: "3.8"
+
+services:
+  artemis1:
+    image: vromero/activemq-artemis:latest
+    container_name: artemis1
+    hostname: artemis1
+    environment:
+      ARTEMIS_USERNAME: admin
+      ARTEMIS_PASSWORD: admin
+    networks:
+      - artemis-net
+    ports:
+      - "8161:8161"   # Web console
+      - "61616:61616" # Core protocol
+    volumes:
+      - ./config/artemis1-broker.xml:/var/lib/artemis-instance/etc/broker.xml
+
+  artemis2:
+    image: vromero/activemq-artemis:latest
+    container_name: artemis2
+    hostname: artemis2
+    environment:
+      ARTEMIS_USERNAME: admin
+      ARTEMIS_PASSWORD: admin
+    networks:
+      - artemis-net
+    ports:
+      - "8162:8161"
+      - "61617:61616"
+    volumes:
+      - ./config/artemis2-broker.xml:/var/lib/artemis-instance/etc/broker.xml
+
+  artemis3:
+    image: vromero/activemq-artemis:latest
+    container_name: artemis3
+    hostname: artemis3
+    environment:
+      ARTEMIS_USERNAME: admin
+      ARTEMIS_PASSWORD: admin
+    networks:
+      - artemis-net
+    ports:
+      - "8163:8161"
+      - "61618:61616"
+    volumes:
+      - ./config/artemis3-broker.xml:/var/lib/artemis-instance/etc/broker.xml
+
+networks:
+  artemis-net:
+    driver: bridge
