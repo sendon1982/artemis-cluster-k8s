@@ -1,0 +1,38 @@
+<configuration xmlns="urn:activemq"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="urn:activemq /schema/artemis-configuration.xsd">
+
+  <core>
+    <!-- Use pod hostname as broker name -->
+    <name>${HOSTNAME}</name>
+
+    <persistence-enabled>true</persistence-enabled>
+    <journal-directory>data/journal</journal-directory>
+    <paging-directory>data/paging</paging-directory>
+    <bindings-directory>data/bindings</bindings-directory>
+    <large-messages-directory>data/large-messages</large-messages-directory>
+
+    <connectors>
+      <connector name="artemis-0">tcp://artemis-0.artemis-broker:61616</connector>
+      <connector name="artemis-1">tcp://artemis-1.artemis-broker:61616</connector>
+      <connector name="artemis-2">tcp://artemis-2.artemis-broker:61616</connector>
+    </connectors>
+
+    <acceptors>
+      <acceptor name="core">tcp://0.0.0.0:61616</acceptor>
+    </acceptors>
+
+    <cluster-connections>
+      <cluster-connection name="my-cluster">
+        <address>jms</address>
+        <!-- Each broker uses its own hostname as connector -->
+        <connector-ref>${HOSTNAME}</connector-ref>
+        <static-connectors>
+          <connector-ref>artemis-0</connector-ref>
+          <connector-ref>artemis-1</connector-ref>
+          <connector-ref>artemis-2</connector-ref>
+        </static-connectors>
+      </cluster-connection>
+    </cluster-connections>
+  </core>
+</configuration>
